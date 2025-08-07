@@ -18,6 +18,4 @@ export class UserRepository
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({ where: { email } });
   }
-
-  // outros métodos específicos...
 }
