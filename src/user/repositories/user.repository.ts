@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from 'src/common/repositories/base-repository';
 import { User } from '@prisma/client';
-import { UserRepositoryInterface } from '../interfaces/user-repository.interface';
+import { IUserRepository } from './iuser-repository';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserRepository
   extends BaseRepository<User>
-  implements UserRepositoryInterface
+  implements IUserRepository
 {
   protected readonly model = 'user' as const;
   protected relations = ['position'];

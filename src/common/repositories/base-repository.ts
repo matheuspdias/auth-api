@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { BaseRepositoryInterface } from './base-repository.interface';
+import { IBaseRepository } from './ibase-repository';
 
 type Delegate<T> = {
   findUnique: (args: any) => Promise<T | null>;
@@ -12,7 +12,7 @@ type Delegate<T> = {
 };
 
 export abstract class BaseRepository<TModel>
-  implements BaseRepositoryInterface<TModel>
+  implements IBaseRepository<TModel>
 {
   protected abstract readonly model: keyof PrismaClient;
 

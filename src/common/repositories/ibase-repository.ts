@@ -1,4 +1,4 @@
-export interface BaseRepositoryInterface<
+export interface IBaseRepository<
   TModel,
   TWhereInput = any,
   TCreateInput = Partial<TModel>,

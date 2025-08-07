@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserRepositoryInterface } from './interfaces/user-repository.interface';
+import type { IUserRepository } from './repositories/iuser-repository';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('UserRepositoryInterface')
-    private readonly userRepository: UserRepositoryInterface,
+    @Inject('IUserRepository')
+    private readonly userRepository: IUserRepository,
   ) {}
 
   async findUserById(id: number) {
@@ -17,6 +17,6 @@ export class UserService {
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findByEmail(email);
+    return await this.userRepository.findByCriteria({ email });
   }
 }
