@@ -13,7 +13,7 @@ export class UserService {
   }
 
   async getAll() {
-    return await this.userRepository.getAll();
+    return await this.userRepository.paginate(1, 3);
   }
 
   async findByEmail(email: string) {

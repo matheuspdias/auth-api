@@ -8,6 +8,7 @@ type Delegate<T> = {
   create: (args: any) => Promise<T>;
   update: (args: any) => Promise<T>;
   delete: (args: any) => Promise<T>;
+  count: (args?: any) => Promise<number>;
 };
 
 export abstract class BaseRepository<TModel>
@@ -35,6 +36,33 @@ export abstract class BaseRepository<TModel>
 
   async getAll(): Promise<TModel[]> {
     return this.repository.findMany();
+  }
+
+  async paginate(
+    page = 1,
+    perPage = 10,
+  ): Promise<{
+    data: TModel[];
+    total: number;
+    page: number;
+    perPage: number;
+  }> {
+    const repository = this.repository;
+
+    const [data, total] = await Promise.all([
+      repository.findMany({
+        skip: (page - 1) * perPage,
+        take: perPage,
+      }),
+      repository.count(),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      perPage,
+    };
   }
 
   async store(data: Partial<TModel>): Promise<TModel> {
