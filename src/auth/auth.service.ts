@@ -3,18 +3,18 @@ import { SignInDTO, SignUpDTO } from './dtos/auth.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
+    private userService: UserService,
   ) {}
 
   async signUp(data: SignUpDTO) {
-    const userAlreadyExists = await this.prismaService.user.findUnique({
-      where: { email: data.email },
-    });
+    const userAlreadyExists = await this.userService.findByEmail(data.email);
 
     if (userAlreadyExists) {
       throw new UnauthorizedException('User already exists');

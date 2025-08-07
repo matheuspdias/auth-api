@@ -13,7 +13,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
     UserService,
     PrismaService,
   ],
-  exports: ['UserRepositoryInterface'],
+  exports: ['UserRepositoryInterface', UserService],
   controllers: [UserController],
 })
 export class UserModule {}
