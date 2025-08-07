@@ -10,6 +10,7 @@ export class UserRepository
   implements UserRepositoryInterface
 {
   protected readonly model = 'user' as const;
+  protected relations = ['position'];
 
   constructor(protected readonly prisma: PrismaService) {
     super(prisma);

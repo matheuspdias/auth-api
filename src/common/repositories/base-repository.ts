@@ -16,15 +16,30 @@ export abstract class BaseRepository<TModel>
 {
   protected abstract readonly model: keyof PrismaClient;
 
+  // Relacionamentos dinâmicos que os repositórios filhos sobrescrevem
+  protected relations: string[] = [];
+
   constructor(protected readonly prisma: PrismaClient) {}
 
   protected get repository(): Delegate<TModel> {
     return this.prisma[this.model] as unknown as Delegate<TModel>;
   }
 
+  // Função auxiliar para transformar ['user', 'customer'] ou outros relacionamento em { user: true, customer: true }
+  protected buildIncludes(): Record<string, boolean> {
+    return this.relations.reduce(
+      (acc, relation) => {
+        acc[relation] = true;
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    );
+  }
+
   async findById(id: number): Promise<TModel | null> {
     return this.repository.findUnique({
       where: { id },
+      include: this.buildIncludes(),
     });
   }
 
@@ -35,7 +50,9 @@ export abstract class BaseRepository<TModel>
   }
 
   async getAll(): Promise<TModel[]> {
-    return this.repository.findMany();
+    return this.repository.findMany({
+      include: this.buildIncludes(),
+    });
   }
 
   async paginate(
@@ -47,14 +64,15 @@ export abstract class BaseRepository<TModel>
     page: number;
     perPage: number;
   }> {
-    const repository = this.repository;
+    const include = this.buildIncludes();
 
     const [data, total] = await Promise.all([
-      repository.findMany({
+      this.repository.findMany({
         skip: (page - 1) * perPage,
         take: perPage,
+        include,
       }),
-      repository.count(),
+      this.repository.count(),
     ]);
 
     return {
